@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="https://thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/product.css}"/>
+  <link rel="stylesheet" th:href="@{/css/cart.css}"/>
+</head>
+<body style="background:url(https://www.onlygfx.com/wp-content/uploads/2021/04/white-triangle-pattern-seamless-background-1.jpg);">
+<nav class="navbar navbar-expand-lg bg-light pad w">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <img
+              src="/logo.png"
+              height="50"
+              alt="Accenstore Logo"
+              loading="lazy"
+      />
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link text-dark" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li th:each="category: ${categories}"><a class="dropdown-item text-dark" th:href="@{'/category/' + ${category.idCat}}" th:text="${category.name}"></a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown"  sec:authorize="hasRole('CUSTOMER')">
+          <a class="nav-link dropdown-toggle text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </svg>
+          </a>
+          <ul  sec:authorize="hasRole('CUSTOMER')" class="dropdown-menu dropdown-menu-end dropdown-cart" aria-labelledby="navbarDropdown">
+              <!-- implement cart list later -->
+            <li th:each="cartProduct : ${cartProducts}">
+                  <span class="item">
+                    <span class="item-left">
+                        <img class = "img-fluid" style="width:40%; height:40%;" th:src="@{'/image/' + ${cartProduct.idP}}" alt="" />
+                        <span class="item-info">
+                            <span th:text="${cartProduct.name}"></span>
+                            <span th:text="${cartProduct.price} + '€'"></span>
+                        </span>
+                    </span>
+                </span>
+            </li>
+            <li><hr class="rounded"></li>
+            <li class="text-center"><a class="text-center" href="/user/cart">View Cart</a></li>
+          </ul>
+        </li>
+
+       <!-- <a href = "/cart">
+            <img
+              src="/shoppingCart.png"
+              height = 20
+              alt="Shopping cart icon"
+              loading="lazy"
+      		/>
+      	</a>-->
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
+          <ul sec:authorize="hasRole('ANONYMOUS')" class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item text-dark" href="/login">Login</a></li>
+            <li><a class="dropdown-item text-dark" href="/register">Register</a></li>
+          </ul>
+          <ul  sec:authorize="hasRole('CUSTOMER')" class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item text-dark" href="/user/accountDetails">Account details</a></li>
+            <li><a class="dropdown-item text-dark" href="/logout">Logout</a></li>
+          </ul>
+          <ul  sec:authorize="hasRole('ADMIN')" class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item text-dark" href="/user/accountDetails">Account details</a></li>
+            <li><a class="dropdown-item text-dark" href="/admin/webuser">Admin page</a></li>
+            <li><a class="dropdown-item text-dark" href="/logout">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<section class="section-products">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="header">
+          <h2>Products</h2>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Single Product -->
+      <div class="col-md-6 col-lg-4 col-xl-3" th:each="product: ${products}">
+        <div id="div2" class="single-product zoom" th:style="'background:url(' + @{'/image/' + ${product.idP}} + ') no-repeat center; background-size: contain;'">
+          <a th:href="@{'/product/' + ${product.idP}}">
+            <div class="part-1">
+            </div>
+           </a>
+        </div>
+        <div class="single-product">
+        <div class="part-2 text-center">
+          <h3 class="product-title" th:text="${product.name}"></h3>
+          <h4 class="product-price" th:text="${product.price} + '€'"></h4>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>User accounts</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    </head>
+    <body>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top mb-3">
+                <div class="container">		        
+                    <div class="collapse navbar-collapse" id="navbarResponsive">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/webuser">Users</a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="/admin/product">Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/categories">Categories</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/logout">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="container">
+            <a th:href="@{/admin/product/add}" class="btn-sm btn-success text-white" role="button">Add product</a>
+            <div th:if="${ not#lists.isEmpty(object)}" class="pt-3">
+            <table class="table table-bordered table-striped">
+                <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th> 
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Picture</th>
+                <th>Category</th>
+                </tr>
+                <tr th:each="temp : ${object}">
+                
+                <td th:text="${temp.getIdP()}"/>
+                <td th:text="${temp.getName()}"/>
+                <td th:text="${temp.getDescription()}"/>
+                <td th:text="${temp.getQuantity()}"/>
+                <td th:text="${temp.getPrice()}"/>
+                <td>
+                    <img class = "img-fluid"  th:src="@{'/image/' + ${temp.idP}}" alt="" />   
+                </td>
+                <td th:text="${temp.getCategory().getName()}"/>
+
+                <td class="col-md-4">
+                        <a th:href="@{/admin/product/{id}(id=${temp.getIdP()})}" class="btn-sm btn-info text-white" role="button">Show</a>
+                        <a th:href="@{/admin/product/update/{id}(id=${temp.getIdP()})}" class="btn-sm btn-primary text-white" role="button">Edit</a>
+                        <a th:href="@{/admin/product/delete/{id}(id=${temp.getIdP()})}" class="btn-sm btn-danger text-white" role="button">Delete</a>
+                    </td>
+                </tr>
+            </table>
+            </div>
+        </div>
+        
+    </body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="https://thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/productDetails.css}"/>
+    <link rel="stylesheet" th:href="@{/css/product.css}"/>
+</head>
+<body style="background:url(https://www.onlygfx.com/wp-content/uploads/2021/04/white-triangle-pattern-seamless-background-1.jpg);">
+
+<nav class="navbar navbar-expand-lg bg-light pad w">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <img
+                    src="/logo.png"
+                    height="50"
+                    alt="Accenstore Logo"
+                    loading="lazy"
+            />
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li th:each="category: ${categories}"><a class="dropdown-item text-dark" th:href="@{'/category/' + ${category.idCat}}" th:text="${category.name}"></a></li>
+                    </ul>
+                </li>
+            </ul>
+
+
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown"  sec:authorize="hasRole('CUSTOMER')">
+                    <a class="nav-link dropdown-toggle text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                        </svg>
+                    </a>
+                    <ul  sec:authorize="hasRole('CUSTOMER')" class="dropdown-menu dropdown-menu-end dropdown-cart" aria-labelledby="navbarDropdown">
+                        <!-- implement cart list later -->
+                        <li th:each="cartProduct : ${cartProducts}">
+                  <span class="item">
+                    <span class="item-left">
+                        <img class = "img-fluid" style="width:40%; height:40%;" th:src="@{'/image/' + ${cartProduct.idP}}" alt="" />
+                        <span class="item-info">
+                            <span th:text="${cartProduct.name}"></span>
+                            <span th:text="${cartProduct.price} + '€'"></span>
+                        </span>
+                    </span>
+                </span>
+                        </li>
+                        <li><hr class="rounded"></li>
+                        <li class="text-center"><a class="text-center" href="/user/cart">View Cart</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
+                    <ul sec:authorize="hasRole('ANONYMOUS')" class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-dark" href="/login">Login</a></li>
+                        <li><a class="dropdown-item text-dark" href="/register">Register</a></li>
+                    </ul>
+                    <ul  sec:authorize="hasRole('CUSTOMER')" class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-dark" href="/user/accountDetails">Account details</a></li>
+                        <li><a class="dropdown-item text-dark" href="/logout">Logout</a></li>
+                    </ul>
+                    <ul  sec:authorize="hasRole('ADMIN')" class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-dark" href="/user/accountDetails">Account details</a></li>
+                        <li><a class="dropdown-item text-dark" href="/admin/webuser">Admin page</a></li>
+                        <li><a class="dropdown-item text-dark" href="/logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="col-lg-8 border p-3 main-section bg-white pad w">
+        <div class="row m-0">
+            <div class="col-lg-4 left-side-product-box pb-3" th:style="'background:url(' + @{'/image/' + ${product.idP}} + ') no-repeat center; background-size: contain;'">
+            </div>
+            <div class="col-lg-8">
+                <div class="right-side-pro-detail border p-3 m-0">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="m-0 p-0" style="color:#000000;" th:text="${product.name}"></p>
+                        </div>
+                        <div class="col-lg-12">
+                            <p class="m-0 p-0 price-pro" th:text="${product.price + '€'}"></p>
+                            <hr class="p-0 m-0">
+                        </div>
+                        <div class="col-lg-12 pt-2">
+                            <h5>Product description</h5>
+                            <span th:text="${product.description}"></span>
+                            <hr class="m-0 pt-2 mt-2">
+                        </div>
+                        <div class="col-lg-12">
+                            <h6>In stock : <a th:text="${product.quantity}"></a></h6>
+                        </div>
+                        <div class="col-lg-12 mt-3">
+                            <div class="row">
+                                <div class="col-lg-6 pb-2">
+                                    <!--<a th:href="'/user/addToCart/' + ${product.idP}" class="btn btn-danger w-100">Add To Cart</a> -->
+                                    <form action="/user/addToCart" method="post">
+                                        <input type="hidden" name="id" th:value="${product.idP}"/>
+                                        <input type="hidden" name="path" th:value="@{'/product/' + ${product.idP}}"/>
+                                        <button th:if="${product.quantity > 0}" type="submit" class="btn btn-primary w-100"> Add to cart</button>
+                                    </form>
+                                </div>
+                                <div class="col-lg-6">
+                                    <a href="/user/cart" class="btn btn-success w-100">Shop Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
